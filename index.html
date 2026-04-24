@@ -125,10 +125,9 @@
                     <button type="button" class="btn-primary" onclick="generatePatch()">Generate Patch</button>
                 </div>
                 <div class="patch-output" id="patchOutput">
-                    <h3 style="margin:20px 0 12px;">Patch Output (复制以下内容去GitHub创建PR)</h3>
+                    <h3 style="margin:20px 0 12px;">Patch Output</h3>
                     <textarea id="patchText" style="height:350px;"></textarea>
-                    <br>
-                    <button type="button" class="btn-success" onclick="copyPatch()">Copy Patch</button>
+                    <button type="button" class="btn-success" onclick="copyPatch()" style="display:block;margin-top:12px;">Copy Patch</button>
                 </div>
             </div>
         </div>
@@ -281,64 +280,62 @@
         }
 
         function generatePatch() {
-            const slug = document.getElementById('inputSlug').value.trim();
-            const nameEn = document.getElementById('inputNameEn').value.trim();
-            const nameZh = document.getElementById('inputNameZh').value.trim();
-            const descEn = document.getElementById('inputDescEn').value.trim();
-            const descZh = document.getElementById('inputDescZh').value.trim();
-            const tags = document.getElementById('inputTags').value.trim();
-            const version = document.getElementById('inputVersion').value.trim() || '1.0.0';
-            const author = document.getElementById('inputAuthor').value.trim() || 'user';
-            const html = document.getElementById('inputHtml').value.trim();
+            console.log('GeneratePatch called');
+            alert('GeneratePatch被点击');
+            var slug = document.getElementById('inputSlug').value.trim();
+            var nameEn = document.getElementById('inputNameEn').value.trim();
+            var nameZh = document.getElementById('inputNameZh').value.trim();
+            var descEn = document.getElementById('inputDescEn').value.trim();
+            var descZh = document.getElementById('inputDescZh').value.trim();
+            var tags = document.getElementById('inputTags').value.trim();
+            var version = document.getElementById('inputVersion').value.trim() || '1.0.0';
+            var author = document.getElementById('inputAuthor').value.trim() || 'user';
+            var html = document.getElementById('inputHtml').value.trim();
 
             if (!slug || !nameEn || !nameZh || !html) {
-                alert('请填写必填字段 (slug, names, HTML)');
+                alert('请填写必填字段 (slug, 两个名称, HTML)');
                 return;
             }
 
-            const today = new Date().toISOString().split('T')[0];
+            var today = new Date().toISOString().split('T')[0];
             
-            const toolEntry = {
+            var toolEntry = {
                 slug: slug,
                 name_en: nameEn,
                 name_zh: nameZh,
                 description_en: descEn,
                 description_zh: descZh,
                 path: 'tools/' + slug + '/index.html',
-                tags: tags ? tags.split(',').map(t => t.trim()) : [],
+                tags: tags ? tags.split(',').map(function(t) { return t.trim(); }) : [],
                 version: version,
                 author: author,
                 last_updated: today
             };
 
-            const patch = `# Add new tool: ${slug}
-
-## 1. Create file: tools/${slug}/index.html
-\`\`\`html
-${html}
-\`\`\`
-
-## 2. Update tools.json
-Add this entry to the "tools" array in tools.json:
-\`\`\`json
-${JSON.stringify(toolEntry, null, 2)}
-\`\`\`
-`;
+            var patch = '# Add new tool: ' + slug + '\n\n' +
+                '## 1. Create file: tools/' + slug + '/index.html\n' +
+                '```html\n' + html + '\n```\n\n' +
+                '## 2. Update tools.json\n' +
+                'Add this entry to the "tools" array in tools.json:\n' +
+                '```json\n' + JSON.stringify(toolEntry, null, 2) + '\n```\n';
 
             document.getElementById('patchText').value = patch;
             document.getElementById('patchOutput').style.display = 'block';
+            alert('生成完成！请查看输出并复制');
         }
 
         function copyPatch() {
-            const text = document.getElementById('patchText').value;
+            console.log('CopyPatch called');
+            alert('CopyPatch被点击');
+            var text = document.getElementById('patchText').value;
             if (!text) {
                 alert('请先点击 Generate Patch');
                 return;
             }
-            navigator.clipboard.writeText(text).then(() => {
+            navigator.clipboard.writeText(text).then(function() {
                 alert('已复制! 现在去 GitHub 创建 PR');
             }).catch(function() {
-                const textarea = document.getElementById('patchText');
+                var textarea = document.getElementById('patchText');
                 textarea.select();
                 document.execCommand('copy');
                 alert('已复制!');

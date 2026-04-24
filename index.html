@@ -80,48 +80,55 @@
             <div class="hero">
                 <h1 id="addTitle">Add New Tool</h1>
             </div>
-            <div class="form-card">
-                <div class="form-group">
-                    <label>Tool Slug * (唯一ID)</label>
-                    <input type="text" id="inputSlug" placeholder="my-new-tool">
+            <div class="form-card" style="max-width:800px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label>Tool Slug *</label>
+                        <input type="text" id="inputSlug" placeholder="my-tool">
+                    </div>
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="inputVersion" placeholder="1.0.0">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="form-group">
+                        <label>Name (English) *</label>
+                        <input type="text" id="inputNameEn" placeholder="My Tool">
+                    </div>
+                    <div class="form-group">
+                        <label>Name (中文) *</label>
+                        <input type="text" id="inputNameZh" placeholder="我的工具">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Name (English) *</label>
-                    <input type="text" id="inputNameEn" placeholder="My Tool">
-                </div>
-                <div class="form-group">
-                    <label>Name (中文) *</label>
-                    <input type="text" id="inputNameZh" placeholder="我的工具">
-                </div>
-                <div class="form-group">
-                    <label>Description (English)</label>
-                    <textarea id="inputDescEn" placeholder="Tool description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Description (中文)</label>
-                    <textarea id="inputDescZh" placeholder="工具描述"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Tags (comma separated)</label>
+                    <label>Tags</label>
                     <input type="text" id="inputTags" placeholder="sql, utility">
-                </div>
-                <div class="form-group">
-                    <label>Version</label>
-                    <input type="text" id="inputVersion" placeholder="1.0.0">
                 </div>
                 <div class="form-group">
                     <label>Author</label>
                     <input type="text" id="inputAuthor" placeholder="Your name">
                 </div>
                 <div class="form-group">
-                    <label>HTML Content *</label>
-                    <textarea id="inputHtml" style="height:200px;" placeholder="<html>...</textarea>
+                    <label>Description (English)</label>
+                    <textarea id="inputDescEn" style="height:60px;" placeholder="Tool description"></textarea>
                 </div>
-                <button class="btn-primary" onclick="generatePatch()">Generate Patch</button>
+                <div class="form-group">
+                    <label>Description (中文)</label>
+                    <textarea id="inputDescZh" style="height:60px;" placeholder="工具描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>HTML Content * (粘贴你的HTML工具代码)</label>
+                    <textarea id="inputHtml" style="height:250px;font-family:monospace;" placeholder="<html>...</textarea>
+                </div>
+                <div style="margin-top:16px;">
+                    <button type="button" class="btn-primary" onclick="generatePatch()">Generate Patch</button>
+                </div>
                 <div class="patch-output" id="patchOutput">
-                    <h3 style="margin: 20px 0 12px;">Patch Output</h3>
-                    <textarea id="patchText"></textarea>
-                    <button class="btn-success" onclick="copyPatch()" style="margin-top:12px;">Copy Patch</button>
+                    <h3 style="margin:20px 0 12px;">Patch Output (复制以下内容去GitHub创建PR)</h3>
+                    <textarea id="patchText" style="height:350px;"></textarea>
+                    <br>
+                    <button type="button" class="btn-success" onclick="copyPatch()">Copy Patch</button>
                 </div>
             </div>
         </div>

@@ -280,8 +280,6 @@
         }
 
         function generatePatch() {
-            console.log('GeneratePatch called');
-            alert('GeneratePatch被点击');
             var slug = document.getElementById('inputSlug').value.trim();
             var nameEn = document.getElementById('inputNameEn').value.trim();
             var nameZh = document.getElementById('inputNameZh').value.trim();
@@ -321,12 +319,9 @@
 
             document.getElementById('patchText').value = patch;
             document.getElementById('patchOutput').style.display = 'block';
-            alert('生成完成！请查看输出并复制');
         }
 
         function copyPatch() {
-            console.log('CopyPatch called');
-            alert('CopyPatch被点击');
             var text = document.getElementById('patchText').value;
             if (!text) {
                 alert('请先点击 Generate Patch');

@@ -10,9 +10,8 @@
         .navbar { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
         .nav-brand { font-size: 18px; font-weight: 600; color: #1a1a1a; }
         .nav-links { display: flex; gap: 24px; align-items: center; }
-        .nav-link { color: #666; text-decoration: none; font-size: 14px; transition: color 0.2s; }
-        .nav-link:hover { color: #1890ff; }
-        .nav-link.active { color: #1890ff; font-weight: 500; }
+        .nav-link { color: #666; text-decoration: none; font-size: 14px; transition: color 0.2s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: #1890ff; }
         .lang-btn { padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; }
         .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
         .hero { text-align: center; margin-bottom: 32px; }
@@ -30,25 +29,36 @@
         .tag { background: #e6f7ff; color: #1890ff; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
         .preview-area { background: #fff; border-radius: 8px; margin-top: 16px; height: 500px; display: none; }
         .preview-area.active { display: block; }
-        .preview-header { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .preview-header { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; background: #fafafa; border-radius: 8px 8px 0 0; }
         .preview-title { font-weight: 500; }
-        .btn-open { padding: 6px 12px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; text-decoration: none; }
+        .btn-open { padding: 6px 12px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; text-decoration: none; display: inline-block; }
         .preview-iframe { width: 100%; height: 460px; border: none; border-radius: 0 0 8px 8px; }
-        .empty { text-align: center; padding: 48px; color: #999; }
+        .empty { text-align: center; padding: 48px; color: #999; grid-column: 1 / -1; }
+        .form-card { background: #fff; border-radius: 8px; padding: 24px; max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #333; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; }
+        .form-group textarea { font-family: monospace; resize: vertical; }
+        .btn-primary { padding: 10px 20px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-success { padding: 10px 20px; background: #52c41a; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .patch-output { display: none; margin-top: 20px; }
+        .patch-output textarea { width: 100%; height: 300px; font-family: monospace; }
+        .about-page { text-align: center; padding: 48px 24px; }
+        .about-page p { max-width: 600px; margin: 0 auto; line-height: 1.8; color: #666; }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-brand" id="appName">HTML Tools Registry</div>
         <div class="nav-links">
-            <a href="#" class="nav-link active" data-page="home" onclick="showPage('home')" id="navTools">Tools</a>
-            <a href="#" class="nav-link" data-page="add" onclick="showPage('add')" id="navAdd">Add Tool</a>
-            <a href="#" class="nav-link" data-page="about" onclick="showPage('about')" id="navAbout">About</a>
+            <a class="nav-link active" data-page="home" onclick="showPage('home')" id="navTools">Tools</a>
+            <a class="nav-link" data-page="add" onclick="showPage('add')" id="navAdd">Add Tool</a>
+            <a class="nav-link" data-page="about" onclick="showPage('about')" id="navAbout">About</a>
             <button class="lang-btn" onclick="toggleLang()" id="langToggle">中文</button>
         </div>
     </nav>
 
-    <main class="main" id="mainContent">
+    <main class="main">
         <!-- Home Page -->
         <div id="pageHome">
             <div class="hero">
@@ -70,71 +80,132 @@
             <div class="hero">
                 <h1 id="addTitle">Add New Tool</h1>
             </div>
-            <div class="tool-card">
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Tool Slug *</label>
-                    <input type="text" id="inputSlug" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="e.g., my-tool">
+            <div class="form-card">
+                <div class="form-group">
+                    <label>Tool Slug * (唯一ID)</label>
+                    <input type="text" id="inputSlug" placeholder="my-new-tool">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Name (English) *</label>
-                    <input type="text" id="inputNameEn" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="My Tool">
+                <div class="form-group">
+                    <label>Name (English) *</label>
+                    <input type="text" id="inputNameEn" placeholder="My Tool">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Name (中文) *</label>
-                    <input type="text" id="inputNameZh" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="我的工具">
+                <div class="form-group">
+                    <label>Name (中文) *</label>
+                    <input type="text" id="inputNameZh" placeholder="我的工具">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Description (English)</label>
-                    <textarea id="inputDescEn" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;height:80px;resize:vertical;" placeholder="Tool description"></textarea>
+                <div class="form-group">
+                    <label>Description (English)</label>
+                    <textarea id="inputDescEn" placeholder="Tool description"></textarea>
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Description (中文)</label>
-                    <textarea id="inputDescZh" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;height:80px;resize:vertical;" placeholder="工具描述"></textarea>
+                <div class="form-group">
+                    <label>Description (中文)</label>
+                    <textarea id="inputDescZh" placeholder="工具描述"></textarea>
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Tags (comma separated)</label>
-                    <input type="text" id="inputTags" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="sql, utility">
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="inputTags" placeholder="sql, utility">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Version</label>
-                    <input type="text" id="inputVersion" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="1.0.0">
+                <div class="form-group">
+                    <label>Version</label>
+                    <input type="text" id="inputVersion" placeholder="1.0.0">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">Author</label>
-                    <input type="text" id="inputAuthor" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;" placeholder="Your name">
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="inputAuthor" placeholder="Your name">
                 </div>
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:500;">HTML Content *</label>
-                    <textarea id="inputHtml" style="width:100%;padding:10px;border:1px solid #d9d9d9;border-radius:4px;height:200px;font-family:monospace;resize:vertical;" placeholder="<html>...</textarea>
+                <div class="form-group">
+                    <label>HTML Content *</label>
+                    <textarea id="inputHtml" style="height:200px;" placeholder="<html>...</textarea>
                 </div>
-                <button onclick="generatePatch()" style="padding:10px 20px;background:#1890ff;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;">Generate Patch</button>
-                <div id="patchOutput" style="display:none;margin-top:20px;">
-                    <h3 style="margin-bottom:12px;">Patch Output</h3>
-                    <textarea id="patchText" style="width:100%;height:300px;padding:12px;border:1px solid #d9d9d9;border-radius:4px;font-family:monospace;resize:vertical;"></textarea>
-                    <button onclick="copyPatch()" style="margin-top:12px;padding:10px 20px;background:#52c41a;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;">Copy Patch</button>
+                <button class="btn-primary" onclick="generatePatch()">Generate Patch</button>
+                <div class="patch-output" id="patchOutput">
+                    <h3 style="margin: 20px 0 12px;">Patch Output</h3>
+                    <textarea id="patchText"></textarea>
+                    <button class="btn-success" onclick="copyPatch()" style="margin-top:12px;">Copy Patch</button>
                 </div>
             </div>
         </div>
 
         <!-- About Page -->
         <div id="pageAbout" style="display:none;">
-            <div class="hero">
+            <div class="about-page">
                 <h1 id="aboutTitle">About</h1>
-                <p id="aboutDesc" style="max-width:600px;margin:0 auto;line-height:1.8;">This is a collection of single-file HTML tools. To add a new tool, fill the form and generate a PR patch.</p>
+                <p id="aboutDesc">This is a collection of single-file HTML tools. To add a new tool, fill the form and generate a PR patch.</p>
             </div>
         </div>
     </main>
 
     <script>
-        let currentLang = 'en';
-        let tools = [];
-        let i18n = {};
+        // Embedded tools data - avoid fetch() CORS issues
+        const toolsData = {
+            "tools": [
+                {
+                    "slug": "sql-monthly-splitter",
+                    "name_en": "SQL Monthly Splitter",
+                    "name_zh": "SQL月度分表工具",
+                    "description_en": "Split SQL table by month with configurable date ranges",
+                    "description_zh": "按月份拆分SQL表，可配置日期范围",
+                    "path": "tools/sql-monthly-splitter/index.html",
+                    "tags": ["sql", "database", "utility"],
+                    "version": "1.0.0",
+                    "author": "user",
+                    "last_updated": "2026-02-25"
+                },
+                {
+                    "slug": "sql-replacer",
+                    "name_en": "SQL Replacer",
+                    "name_zh": "SQL字符替换工具",
+                    "description_en": "Replace strings in SQL with regex support",
+                    "description_zh": "SQL字符替换工具，支持正则表达式",
+                    "path": "tools/sql-replacer/index.html",
+                    "tags": ["sql", "replace", "utility"],
+                    "version": "1.0.0",
+                    "author": "user",
+                    "last_updated": "2026-02-24"
+                }
+            ]
+        };
 
-        async function loadI18n() {
-            const res = await fetch('i18n/' + currentLang + '.json');
-            i18n = await res.json();
-            applyI18n();
-        }
+        const i18nData = {
+            en: {
+                "app_name": "HTML Tools Registry",
+                "app_desc": "Single-file HTML tools collection",
+                "nav_tools": "Tools",
+                "nav_add": "Add Tool",
+                "nav_about": "About",
+                "lang_toggle": "中文",
+                "tool_card_version": "Version",
+                "tool_card_author": "Author",
+                "tool_card_last_updated": "Updated",
+                "tool_card_tags": "Tags",
+                "preview_title": "Preview",
+                "empty_tools": "No tools found",
+                "add_form_title": "Add New Tool",
+                "about_title": "About",
+                "about_desc": "This is a collection of single-file HTML tools. To add a new tool, fill the form and generate a PR patch."
+            },
+            zh: {
+                "app_name": "HTML 工具集",
+                "app_desc": "单文件HTML工具集合",
+                "nav_tools": "工具",
+                "nav_add": "添加工具",
+                "nav_about": "关于",
+                "lang_toggle": "English",
+                "tool_card_version": "版本",
+                "tool_card_author": "作者",
+                "tool_card_last_updated": "更新于",
+                "tool_card_tags": "标签",
+                "preview_title": "预览",
+                "empty_tools": "暂无工具",
+                "add_form_title": "添加工具",
+                "about_title": "关于",
+                "about_desc": "这是一个单文件HTML工具集合。如需添加工具，请填写表单并生成PR补丁。"
+            }
+        };
+
+        let currentLang = 'en';
+        let tools = toolsData.tools;
+        let i18n = i18nData.en;
 
         function applyI18n() {
             document.getElementById('appName').textContent = i18n.app_name;
@@ -150,16 +221,9 @@
             document.getElementById('previewTitle').textContent = i18n.preview_title;
         }
 
-        async function loadTools() {
-            const res = await fetch('tools.json');
-            const data = await res.json();
-            tools = data.tools || [];
-            renderTools();
-        }
-
         function renderTools() {
             const grid = document.getElementById('toolsGrid');
-            if (tools.length === 0) {
+            if (!tools || tools.length === 0) {
                 grid.innerHTML = '<div class="empty">' + i18n.empty_tools + '</div>';
                 return;
             }
@@ -189,6 +253,7 @@
             document.getElementById('previewArea').classList.add('active');
             document.getElementById('previewIframe').src = tool.path;
             document.getElementById('btnOpen').href = tool.path;
+            document.getElementById('previewIframe').scrollIntoView({behavior: 'smooth'});
         }
 
         function showPage(page) {
@@ -203,11 +268,12 @@
 
         function toggleLang() {
             currentLang = currentLang === 'en' ? 'zh' : 'en';
-            loadI18n();
+            i18n = i18nData[currentLang];
+            applyI18n();
             renderTools();
         }
 
-function generatePatch() {
+        function generatePatch() {
             const slug = document.getElementById('inputSlug').value.trim();
             const nameEn = document.getElementById('inputNameEn').value.trim();
             const nameZh = document.getElementById('inputNameZh').value.trim();
@@ -219,13 +285,12 @@ function generatePatch() {
             const html = document.getElementById('inputHtml').value.trim();
 
             if (!slug || !nameEn || !nameZh || !html) {
-                alert('请填写必填字段 (slug, names, HTML) / Please fill required fields');
+                alert('请填写必填字段 (slug, names, HTML)');
                 return;
             }
 
             const today = new Date().toISOString().split('T')[0];
             
-            // Build manifest entry
             const toolEntry = {
                 slug: slug,
                 name_en: nameEn,
@@ -236,7 +301,6 @@ function generatePatch() {
                 tags: tags ? tags.split(',').map(t => t.trim()) : [],
                 version: version,
                 author: author,
-                homepage: '',
                 last_updated: today
             };
 
@@ -267,75 +331,16 @@ ${JSON.stringify(toolEntry, null, 2)}
             navigator.clipboard.writeText(text).then(() => {
                 alert('已复制! 现在去 GitHub 创建 PR');
             }).catch(function() {
-                // Fallback for older browsers
                 const textarea = document.getElementById('patchText');
                 textarea.select();
                 document.execCommand('copy');
-                alert('已复制! 现在去 GitHub 创建 PR');
+                alert('已复制!');
             });
         }
 
-            // Check duplicate
-            if (tools.find(t => t.slug === slug)) {
-                alert('Tool slug already exists: ' + slug);
-                return;
-            }
-
-            // Generate patch content
-            const today = new Date().toISOString().split('T')[0];
-            const toolEntry = {
-                slug,
-                name_en: nameEn,
-                name_zh: nameZh,
-                description_en: descEn,
-                description_zh: descZh,
-                path: 'tools/' + slug + '/index.html',
-                tags: tags ? tags.split(',').map(t => t.trim()) : [],
-                version,
-                author,
-                homepage: '',
-                last_updated: today
-            };
-
-            const manifestUpdate = JSON.stringify(toolEntry, null, 2).replace(/"/g, '\\"').replace(/\n/g, '\\n"+\\n    "');
-
-            const patch = `diff --git a/tools/${slug}/index.html b/tools/${slug}/index.html
-new file mode 100644
---- /dev/null
-+++ b/tools/${slug}/index.html
-@@ -0,0 +1,${html.split('\n').length + 1} @@
-+${html.split('\n').join('\n+')}
-+
-+diff --git a/tools.json b/tools.json
---- a/tools.json
-+++ b/tools.json
-@@ -10,6 +10,7 @@
-       }
-     ],
-+    ${manifestUpdate}
-   ]
- }`;
-
-            document.getElementById('patchText').value = patch;
-            document.getElementById('patchOutput').style.display = 'block';
-        }
-
-        function copyPatch() {
-            const text = document.getElementById('patchText').value;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Patch copied! Create a PR with this content.');
-            });
-        }
-
-        // Init - with error handling
-        loadI18n().catch(function(e) {
-            console.log('i18n load error, using fallback');
-            i18n = {"app_name":"HTML Tools","nav_tools":"Tools","nav_add":"Add","nav_about":"About","lang_toggle":"EN","empty_tools":"No tools"};
-        });
-        loadTools().catch(function(e) {
-            console.log('tools load error', e);
-            tools = [];
-        });
+        // Init
+        applyI18n();
+        renderTools();
     </script>
 </body>
 </html>

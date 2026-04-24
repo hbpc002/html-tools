@@ -16,8 +16,7 @@ jobs:
       
       - name: Validate tools.json
         run: |
-          echo "Checking tools.json..."
-          python3 -c "
+          python3 << 'EOF'
 import json
 import os
 from pathlib import Path
@@ -37,7 +36,7 @@ slugs = []
 for tool in tools:
     for field in required_fields:
         if field not in tool:
-            print(f'ERROR: Tool {tool.get(\"slug\", \"?\")} missing field: {field}')
+            print(f'ERROR: Tool {tool.get("slug", "?")} missing field: {field}')
             exit(1)
     
     slugs.append(tool['slug'])
@@ -48,12 +47,13 @@ if len(slugs) != len(set(slugs)):
     exit(1)
 
 print(f'Validated {len(tools)} tools')
-"
+EOF
 
       - name: Check tool paths exist
         run: |
-          python3 -c "
+          python3 << 'EOF'
 import json
+import os
 
 with open('tools.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
@@ -73,7 +73,7 @@ if missing:
     exit(1)
 
 print('All tool paths exist')
-"
+EOF
 
       - name: Generate manifest
         if: github.event_name == 'push'

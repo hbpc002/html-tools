@@ -207,7 +207,7 @@
             renderTools();
         }
 
-        function generatePatch() {
+function generatePatch() {
             const slug = document.getElementById('inputSlug').value.trim();
             const nameEn = document.getElementById('inputNameEn').value.trim();
             const nameZh = document.getElementById('inputNameZh').value.trim();
@@ -219,9 +219,61 @@
             const html = document.getElementById('inputHtml').value.trim();
 
             if (!slug || !nameEn || !nameZh || !html) {
-                alert('Please fill in required fields (slug, names, HTML)');
+                alert('请填写必填字段 (slug, names, HTML) / Please fill required fields');
                 return;
             }
+
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Build manifest entry
+            const toolEntry = {
+                slug: slug,
+                name_en: nameEn,
+                name_zh: nameZh,
+                description_en: descEn,
+                description_zh: descZh,
+                path: 'tools/' + slug + '/index.html',
+                tags: tags ? tags.split(',').map(t => t.trim()) : [],
+                version: version,
+                author: author,
+                homepage: '',
+                last_updated: today
+            };
+
+            const patch = `# Add new tool: ${slug}
+
+## 1. Create file: tools/${slug}/index.html
+\`\`\`html
+${html}
+\`\`\`
+
+## 2. Update tools.json
+Add this entry to the "tools" array in tools.json:
+\`\`\`json
+${JSON.stringify(toolEntry, null, 2)}
+\`\`\`
+`;
+
+            document.getElementById('patchText').value = patch;
+            document.getElementById('patchOutput').style.display = 'block';
+        }
+
+        function copyPatch() {
+            const text = document.getElementById('patchText').value;
+            if (!text) {
+                alert('请先点击 Generate Patch');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制! 现在去 GitHub 创建 PR');
+            }).catch(function() {
+                // Fallback for older browsers
+                const textarea = document.getElementById('patchText');
+                textarea.select();
+                document.execCommand('copy');
+                alert('已复制! 现在去 GitHub 创建 PR');
+            });
+        }
 
             // Check duplicate
             if (tools.find(t => t.slug === slug)) {
@@ -275,9 +327,15 @@ new file mode 100644
             });
         }
 
-        // Init
-        loadI18n();
-        loadTools();
+        // Init - with error handling
+        loadI18n().catch(function(e) {
+            console.log('i18n load error, using fallback');
+            i18n = {"app_name":"HTML Tools","nav_tools":"Tools","nav_add":"Add","nav_about":"About","lang_toggle":"EN","empty_tools":"No tools"};
+        });
+        loadTools().catch(function(e) {
+            console.log('tools load error', e);
+            tools = [];
+        });
     </script>
 </body>
 </html>

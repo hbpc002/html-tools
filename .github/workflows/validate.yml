@@ -1,0 +1,81 @@
+name: Validate Tools Manifest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate tools.json
+        run: |
+          echo "Checking tools.json..."
+          python3 -c "
+import json
+import os
+from pathlib import Path
+
+with open('tools.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+tools = data.get('tools', [])
+if not tools:
+    print('ERROR: No tools found in tools.json')
+    exit(1)
+
+# Check required fields
+required_fields = ['slug', 'name_en', 'name_zh', 'path', 'tags', 'version', 'last_updated']
+slugs = []
+
+for tool in tools:
+    for field in required_fields:
+        if field not in tool:
+            print(f'ERROR: Tool {tool.get(\"slug\", \"?\")} missing field: {field}')
+            exit(1)
+    
+    slugs.append(tool['slug'])
+
+# Check duplicates
+if len(slugs) != len(set(slugs)):
+    print('ERROR: Duplicate slugs found')
+    exit(1)
+
+print(f'Validated {len(tools)} tools')
+"
+
+      - name: Check tool paths exist
+        run: |
+          python3 -c "
+import json
+
+with open('tools.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+tools = data.get('tools', [])
+missing = []
+
+for tool in tools:
+    path = tool.get('path', '')
+    if not path:
+        continue
+    if not os.path.exists(path):
+        missing.append(path)
+
+if missing:
+    print('ERROR: Missing tool files:', missing)
+    exit(1)
+
+print('All tool paths exist')
+"
+
+      - name: Generate manifest
+        if: github.event_name == 'push'
+        run: |
+          echo "Manifest is valid. Last generated: $(date)"

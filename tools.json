@@ -1,0 +1,35 @@
+{
+  "tools": [
+    {
+      "slug": "sql-monthly-splitter",
+      "name_en": "SQL Monthly Splitter",
+      "name_zh": "SQL月度分表工具",
+      "description_en": "Split SQL table by month with configurable date ranges",
+      "description_zh": "按月份拆分SQL表，可配置日期范围",
+      "path": "tools/sql-monthly-splitter/index.html",
+      "tags": ["sql", "database", "utility"],
+      "version": "1.0.0",
+      "author": "user",
+      "homepage": "",
+      "last_updated": "2026-02-25"
+    },
+    {
+      "slug": "sql-replacer",
+      "name_en": "SQL Replacer",
+      "name_zh": "SQL字符替换工具",
+      "description_en": "Replace strings in SQL with regex support",
+      "description_zh": "SQL字符替换工具，支持正则表达式",
+      "path": "tools/sql-replacer/index.html",
+      "tags": ["sql", "replace", "utility"],
+      "version": "1.0.0",
+      "author": "user",
+      "homepage": "",
+      "last_updated": "2026-02-24"
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "last_generated": "2026-04-24",
+    "total_tools": 2
+  }
+}
